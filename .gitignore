@@ -24,3 +24,9 @@ yarn-error.log*
 
 # Coverage
 coverage/
+
+# Ferramentas locais (não fazem parte do app)
+.claude/
+
+# Imagens de referência do Figma (material de apoio, não sobem no repo)
+img/
