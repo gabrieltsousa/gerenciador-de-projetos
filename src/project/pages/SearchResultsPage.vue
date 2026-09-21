@@ -41,7 +41,13 @@ function goToEdit(id: string) {
 
 <template>
   <div class="search-results-page">
-    <SearchBar v-model="query" :show-history="false" @submit="(value) => (query = value)" />
+    <SearchBar
+      v-model="query"
+      :show-history="false"
+      show-close-button
+      @submit="(value) => (query = value)"
+      @close="query = ''"
+    />
 
     <main class="search-results-page__content">
       <RouterLink to="/" class="search-results-page__back">

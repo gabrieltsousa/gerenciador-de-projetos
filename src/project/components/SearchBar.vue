@@ -48,7 +48,7 @@ function handleKeydown(event: KeyboardEvent) {
 </script>
 
 <template>
-  <div class="search-bar">
+  <div class="search-bar" :class="{ 'search-bar--dropdown-open': showHistory && isFocused && history.length > 0 }">
     <form class="search-bar__form" role="search" @submit.prevent="emit('submit', modelValue)">
       <AppIcon name="search" class="search-bar__icon" />
       <input
@@ -110,14 +110,18 @@ function handleKeydown(event: KeyboardEvent) {
 </template>
 
 <style scoped>
-/* No Figma a barra de busca tem uma borda roxa envolvendo o conjunto
-   inteiro (ícone + campo + histórico), não um contorno isolado em volta
-   só do <input>. Por isso a borda mora aqui, fixa, em vez de um
-   :focus-visible no input — que desenhava um retângulo solto, desconectado
-   do ícone e do botão de fechar ao lado. */
 .search-bar {
   background-color: var(--color-surface);
   position: relative;
+  border-bottom: 1px solid var(--color-page-bg);
+}
+
+/* A referência "Resultado da busca" (sem histórico) mostra a barra achatada,
+   sem borda nem sombra — só a barra "Busca + Histórico Aberto" (com a lista
+   de sugestões visível) mostra uma borda roxa envolvendo tudo (ícone + campo
+   + histórico) como um cartão único. Por isso é condicional ao dropdown
+   estar de fato aberto, não um estado permanente da barra. */
+.search-bar--dropdown-open {
   border: 1.5px solid var(--color-brand);
   border-radius: var(--radius-md);
   /* Sombra confirmada na referência (falloff visível na página logo abaixo
@@ -157,11 +161,10 @@ function handleKeydown(event: KeyboardEvent) {
 }
 
 /* appearance:none no input não basta pro "x" nativo de limpar do Chrome —
-   ele é um pseudo-elemento à parte. Só escondido quando o botão de fechar
-   próprio existe (show-close-button) — sem isso duplicava os dois "x" lado
-   a lado; sem o botão próprio (ex.: SearchResultsPage), o nativo continua
-   sendo a única forma rápida de limpar o campo. */
-.search-bar__form:has(.search-bar__close) .search-bar__input::-webkit-search-cancel-button {
+   é um pseudo-elemento à parte, cinza-arroxeado e fora do design (nem
+   aparece na referência do Figma). Sempre escondido — o "x" cinza próprio
+   (.search-bar__close) é a única forma de limpar, em toda tela. */
+.search-bar__input::-webkit-search-cancel-button {
   display: none;
 }
 
