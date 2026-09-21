@@ -4,7 +4,7 @@ SPA para criar, editar, remover e favoritar projetos, com busca, ordenação e h
 
 ## Demo
 
-🔗 [Acessar aplicação](https://gerenciador-de-projetos-delta.vercel.app)
+🔗 [Acessar aplicação](https://gerenciador-de-projetos-tawny.vercel.app)
 
 ## Funcionalidades
 
