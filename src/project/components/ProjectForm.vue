@@ -161,6 +161,16 @@ function handleSubmit() {
   gap: var(--space-4);
 }
 
+/* Em telas estreitas, "Data de Início (Obrigatório)" quebra em duas linhas
+   e "Data Final" não — os dois inputs abaixo ficam desalinhados, e a coluna
+   da direita chega a estourar a largura do card. Empilhar em 1 coluna
+   evita o problema na raiz, em vez de tentar encaixar o texto. */
+@media (max-width: 32rem) {
+  .project-form__row {
+    grid-template-columns: 1fr;
+  }
+}
+
 .project-form__field {
   display: flex;
   flex-direction: column;
