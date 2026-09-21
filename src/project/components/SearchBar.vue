@@ -121,6 +121,11 @@ function handleKeydown(event: KeyboardEvent) {
 
 .search-bar__input {
   flex: 1;
+  /* Sem isso, o item flex não encolhe abaixo do seu min-content (o mínimo
+     "automático" de um <input> é baseado no conteúdo, não é 0) — em telas
+     estreitas isso empurra o botão de fechar pra fora da viewport e a
+     página inteira ganha scroll horizontal. */
+  min-width: 0;
   border: none;
   font-size: var(--font-size-lg);
   color: var(--color-heading);
