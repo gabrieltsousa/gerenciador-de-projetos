@@ -62,17 +62,24 @@ function goToEdit(id: string) {
         description="Tente buscar por outro termo."
       />
 
-      <div v-else class="search-results-page__grid">
+      <TransitionGroup
+        v-else
+        name="card-slide-up"
+        tag="div"
+        appear
+        class="search-results-page__grid"
+      >
         <ProjectCard
-          v-for="project in results"
+          v-for="(project, index) in results"
           :key="project.id"
+          :style="{ transitionDelay: `${Math.min(index, 10) * 30}ms` }"
           :project="project"
           :search-query="query"
           @toggle-favorite="store.toggleFavorite"
           @edit="goToEdit"
           @remove="deleteFlow.request"
         />
-      </div>
+      </TransitionGroup>
     </main>
 
     <DeleteProjectModal
@@ -121,5 +128,10 @@ function goToEdit(id: string) {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
   gap: var(--space-5);
+  /* z-index:0 cria um contexto de empilhamento local — sem isso, o
+     z-index:-1 de um card em movimento (.card-slide-up-move) escapa pra
+     trás do fundo da página em vez de só atrás dos cards vizinhos. */
+  position: relative;
+  z-index: 0;
 }
 </style>

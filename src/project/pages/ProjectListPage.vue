@@ -100,16 +100,23 @@ function submitSearch(query: string) {
           description="Marque projetos com a estrela para vê-los aqui."
         />
 
-        <div v-else class="project-list-page__grid">
+        <TransitionGroup
+          v-else
+          name="card-slide-up"
+          tag="div"
+          appear
+          class="project-list-page__grid"
+        >
           <ProjectCard
-            v-for="project in visibleProjects"
+            v-for="(project, index) in visibleProjects"
             :key="project.id"
+            :style="{ transitionDelay: `${Math.min(index, 10) * 30}ms` }"
             :project="project"
             @toggle-favorite="store.toggleFavorite"
             @edit="goToEdit"
             @remove="deleteFlow.request"
           />
-        </div>
+        </TransitionGroup>
       </template>
     </main>
 
@@ -174,5 +181,12 @@ function submitSearch(query: string) {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
   gap: var(--space-5);
+  /* Âncora pro item saindo (.card-slide-up-leave-active) virar
+     position:absolute sem pular pra fora do grid. z-index:0 cria um
+     contexto de empilhamento local — sem isso, o z-index:-1 de um card em
+     movimento (.card-slide-up-move) escapa pra trás do fundo da própria
+     página em vez de só atrás dos cards vizinhos, e ele some da tela. */
+  position: relative;
+  z-index: 0;
 }
 </style>

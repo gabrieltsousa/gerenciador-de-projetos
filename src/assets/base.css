@@ -63,6 +63,50 @@ img {
   transform: translateY(-4px) scale(0.98);
 }
 
+/* Cards de projeto entrando com slide-up — compartilhada entre a listagem
+   e o resultado de busca (mesmo motivo do dropdown-pop acima: um único
+   `name` pra dois componentes diferentes). leave-active vira position:
+   absolute pra não empurrar os outros cards durante o fade-out (o grid pai
+   precisa de position:relative pra isso ancorar certo).
+
+   Um card sobrevivente que troca de posição (-move) cruza visualmente o
+   caminho de quem está entrando/saindo ao mesmo tempo — sem controlar o
+   empilhamento, ele "pisca" por cima de quem já estava parado. z-index
+   negativo em -move garante que quem está se deslocando sempre passa por
+   baixo de quem ficou parado, nunca por cima. */
+.card-slide-up-enter-active {
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
+}
+
+.card-slide-up-enter-from {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.card-slide-up-leave-active {
+  transition: opacity 0.2s ease;
+  position: absolute;
+}
+
+.card-slide-up-leave-to {
+  opacity: 0;
+}
+
+.card-slide-up-move {
+  transition: transform 0.3s ease;
+  z-index: -1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-slide-up-enter-active,
+  .card-slide-up-leave-active,
+  .card-slide-up-move {
+    transition: none;
+  }
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
