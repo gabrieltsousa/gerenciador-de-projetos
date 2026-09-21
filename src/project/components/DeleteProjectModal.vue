@@ -86,7 +86,10 @@ const emit = defineEmits<{ confirm: []; close: [] }>()
   /* Medido: ~26px — maior que o próprio título do modal (20px), o nome do
      projeto é o texto de maior destaque visual ali. */
   font-size: var(--font-size-xl);
-  color: var(--color-text-strong);
+  /* Cor real amostrada por pixel: ~#707070, quase idêntica a
+     --color-text-muted — nada perto do quase-preto que estava aqui antes
+     (medição anterior errada; token --color-text-strong removido). */
+  color: var(--color-text-muted);
 }
 
 .delete-project-modal__error {

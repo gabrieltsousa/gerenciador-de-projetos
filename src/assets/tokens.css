@@ -19,11 +19,6 @@
 
   /* Texto */
   --color-heading: #1f1284;
-  /* Amostrado do nome do projeto no modal de exclusão — quase preto, não o
-     roxo do heading. Mesmo valor de --color-header-bg, mas como token de
-     texto semanticamente separado (não é "a cor do header", é "texto de
-     ênfase forte"). */
-  --color-text-strong: #1d1930;
   /* #717171 (valor exato amostrado) passa 4.88:1 sobre branco mas só
      4.41:1 sobre --color-page-bg (usado dentro do card de formulário) —
      abaixo do mínimo de 4.5:1 pra texto. Escurecido pra 4.68:1. */
