@@ -4,6 +4,14 @@
   box-sizing: border-box;
 }
 
+/* Halo azul translúcido que Safari/Chrome mobile desenham ao tocar em
+   qualquer elemento — efeito nativo separado do outline de :focus-visible
+   (por isso não some só ajustando outline). O app já tem seu próprio
+   feedback visual de foco/toque, então o padrão do navegador é desligado. */
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
 body {
   margin: 0;
   background-color: var(--color-page-bg);

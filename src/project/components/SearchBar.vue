@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref, useTemplateRef } from 'vue'
 
 import AppIcon from '@/ui/AppIcon.vue'
 
@@ -21,6 +21,15 @@ const emit = defineEmits<{
 }>()
 
 const isFocused = ref(false)
+const inputRef = useTemplateRef<HTMLInputElement>('inputRef')
+
+// SearchBar só existe no DOM quando a busca está aberta (v-else no lugar
+// do AppHeader) — o clique que abriu passou por um botão que já não existe
+// mais, então o foco cairia no <body> sem isso, e o usuário precisaria
+// clicar de novo pra poder digitar.
+onMounted(() => {
+  inputRef.value?.focus()
+})
 
 function handleInput(event: Event) {
   emit('update:modelValue', (event.target as HTMLInputElement).value)
@@ -43,6 +52,7 @@ function handleKeydown(event: KeyboardEvent) {
     <form class="search-bar__form" role="search" @submit.prevent="emit('submit', modelValue)">
       <AppIcon name="search" class="search-bar__icon" />
       <input
+        ref="inputRef"
         type="search"
         class="search-bar__input"
         placeholder="Digite o nome do projeto..."
@@ -100,10 +110,20 @@ function handleKeydown(event: KeyboardEvent) {
 </template>
 
 <style scoped>
+/* No Figma a barra de busca tem uma borda roxa envolvendo o conjunto
+   inteiro (ícone + campo + histórico), não um contorno isolado em volta
+   só do <input>. Por isso a borda mora aqui, fixa, em vez de um
+   :focus-visible no input — que desenhava um retângulo solto, desconectado
+   do ícone e do botão de fechar ao lado. */
 .search-bar {
   background-color: var(--color-surface);
   position: relative;
-  border-bottom: 1px solid var(--color-page-bg);
+  border: 1.5px solid var(--color-brand);
+  border-radius: var(--radius-md);
+  /* Sombra confirmada na referência (falloff visível na página logo abaixo
+     da caixa) — mesma cor-base usada em todas as outras sombras do app
+     (modal, card, menu de opções), só o peso muda por contexto. */
+  box-shadow: 0 4px 12px rgba(31, 18, 132, 0.18);
 }
 
 .search-bar__form {
@@ -129,18 +149,29 @@ function handleKeydown(event: KeyboardEvent) {
   border: none;
   font-size: var(--font-size-lg);
   color: var(--color-heading);
+  /* input[type=search] tem chrome nativo próprio em alguns navegadores
+     (Safari/iOS em especial) — sem isso, o anel de foco padrão do sistema
+     aparece por cima do nosso outline customizado, azul e fora do design. */
+  appearance: none;
+  -webkit-appearance: none;
 }
 
-/* outline:none incondicional aqui sobrescrevia o anel de foco global (regra
-   local tem mais especificidade que a global de base.css) — deixando o
-   campo sem nenhum indicador visível de foco por teclado. */
+/* appearance:none no input não basta pro "x" nativo de limpar do Chrome —
+   ele é um pseudo-elemento à parte. Só escondido quando o botão de fechar
+   próprio existe (show-close-button) — sem isso duplicava os dois "x" lado
+   a lado; sem o botão próprio (ex.: SearchResultsPage), o nativo continua
+   sendo a única forma rápida de limpar o campo. */
+.search-bar__form:has(.search-bar__close) .search-bar__input::-webkit-search-cancel-button {
+  display: none;
+}
+
+/* Sem outline próprio: a borda do .search-bar já demarca a barra inteira
+   como "em uso" assim que abre (o campo recebe foco automaticamente), e o
+   cursor piscando no input já indica onde a digitação vai. Os outros
+   elementos focáveis aqui dentro (botão de fechar, itens do histórico)
+   continuam com o anel de foco padrão global. */
 .search-bar__input:focus {
   outline: none;
-}
-
-.search-bar__input:focus-visible {
-  outline: 2px solid var(--color-brand);
-  outline-offset: -2px;
 }
 
 .search-bar__input::placeholder {
@@ -168,6 +199,11 @@ function handleKeydown(event: KeyboardEvent) {
   align-items: center;
   justify-content: space-between;
   padding: var(--space-2) var(--space-6);
+  border-bottom: 1px solid var(--color-page-bg);
+}
+
+.search-bar__history-item:last-child {
+  border-bottom: none;
 }
 
 .search-bar__history-term {
@@ -176,7 +212,10 @@ function handleKeydown(event: KeyboardEvent) {
   gap: var(--space-3);
   border: none;
   background: transparent;
-  color: var(--color-heading);
+  /* Amostrado na referência: cinza neutro (~#6d6d6d), não o roxo-escuro do
+     heading — o histórico é secundário, não tem o mesmo peso visual do
+     nome de um projeto. */
+  color: var(--color-text-muted);
   flex: 1;
   text-align: left;
   padding: var(--space-1) 0;
