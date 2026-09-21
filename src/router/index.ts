@@ -24,5 +24,10 @@ export const router = createRouter({
       name: 'search-results',
       component: () => import('@/project/pages/SearchResultsPage.vue'),
     },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: () => import('@/project/pages/NotFoundPage.vue'),
+    },
   ],
 })
